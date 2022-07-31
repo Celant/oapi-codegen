@@ -138,7 +138,7 @@ func Generate(spec *openapi3.T, opts Configuration) (string, error) {
 			if err != nil {
 				return "", fmt.Errorf("error reading user-provided template file: %w", err)
 			}
-			if _, err := utpl.Parse(data); err != nil {
+			if _, err := utpl.Parse(string(data)); err != nil {
 				return "", fmt.Errorf("error parsing user-provided template file: %w", err)
 			}
 		}
