@@ -20,6 +20,7 @@ import (
 	"embed"
 	"fmt"
 	"io/fs"
+	"io/ioutil"
 	"runtime/debug"
 	"sort"
 	"strings"
@@ -129,6 +130,16 @@ func Generate(spec *openapi3.T, opts Configuration) (string, error) {
 			utpl := t.New(tpl.Name())
 			if _, err := utpl.Parse(opts.OutputOptions.UserTemplates[tpl.Name()]); err != nil {
 				return "", fmt.Errorf("error parsing user-provided template %q: %w", tpl.Name(), err)
+			}
+		}
+		if fileName, ok := opts.OutputOptions.UserTemplateFiles[tpl.Name()]; ok {
+			utpl := t.New(tpl.Name())
+			data, err := ioutil.ReadFile(fileName)
+			if err != nil {
+				return "", fmt.Errorf("error reading user-provided template file: %w", err)
+			}
+			if _, err := utpl.Parse(data); err != nil {
+				return "", fmt.Errorf("error parsing user-provided template file: %w", err)
 			}
 		}
 	}
